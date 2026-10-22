@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
-        productViewModel.getProduct().observe(this, products -> {
+        productViewModel.getProducts().observe(this, products -> {
             if (products != null) {
                 for(Product product: products) {
                     Log.d(TAG, "Product Name: "+ product.name());

@@ -1,6 +1,7 @@
 package com.riyanto.simplemvvm.viewmodel;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.riyanto.simplemvvm.model.Product;
@@ -11,16 +12,33 @@ import java.util.List;
 public class ProductViewModel extends ViewModel {
 
     private ProductRepository repository;
+    private MutableLiveData<List<Product>> productLiveData = new MutableLiveData<>();
+    private MutableLiveData<String> errorMessageLiveData = new MutableLiveData<>();
 
     public ProductViewModel() {
         repository = new ProductRepository();
+        loadProducts();
     }
 
-    public LiveData<List<Product>> getProduct() {
-        return repository.getProducts();
+    public void loadProducts() {
+        repository.fetchProduct(new ProductRepository.ProductCallback() {
+            @Override
+            public void onSuccess(List<Product> products) {
+                productLiveData.setValue(products);
+            }
+
+            @Override
+            public void onError(String message) {
+                errorMessageLiveData.setValue(message);
+            }
+        });
+    }
+
+    public LiveData<List<Product>> getProducts() {
+        return productLiveData;
     }
 
     public LiveData<String> getErrorMessage() {
-        return repository.getErrorMessage();
+        return errorMessageLiveData;
     }
 }
